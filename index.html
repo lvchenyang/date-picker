@@ -3,17 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" href="./css/date-picker.css">
 </head>
 <body>
 <input type="text" placeholder="date picker" id="datePicker">
 <script src="node_modules/jquery/dist/jquery.js"></script>
-<script src="calendar.js"></script>
-<script src="date-picker.js"></script>
+<script src="src/calendar.js"></script>
+<script src="src/date-picker.js"></script>
 <script>
 $('#datePicker').datePicker({});
-    var calendar = new Calendar();
-    var month = calendar.getMonthTable();
-    console.log(calendar.toString());
 </script>
 </body>
 </html>

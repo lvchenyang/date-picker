@@ -1,0 +1,31 @@
+.date-picker-table{
+    width: 210px;
+    font-size: 14px;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    border: none;
+    border-collapse: collapse;
+}
+.date-picker-table thead .prev,
+.date-picker-table thead .next{
+    width: 30px;
+    height: 30px;
+}
+.date-picker-table tbody td{
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    vertical-align: middle;
+    cursor: pointer;
+}
+.date-picker-table tbody td:hover{
+    background-color: antiquewhite;
+}
+.date-picker-table tbody td.disabled{
+    color: #a9a9a9;
+    cursor: not-allowed;
+}
+.date-picker-table tbody td.disabled:hover{
+    background-color: transparent;
+}
