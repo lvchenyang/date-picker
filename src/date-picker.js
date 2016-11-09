@@ -8,6 +8,7 @@
         factory(jQuery, false);
     }
 })(jQuery, function($, noGlobal){
+
     var Calendar = function(date) {
         if(!(date instanceof Date)){
             if(typeof date === 'string'){
@@ -69,6 +70,7 @@
         return Calendar.month_text[this.getMonth()];
     };
     Calendar.month_text = ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'];
+    Calendar.week_text = ['日', '一', '二', '三', '四', '五', '六'];
 
     // 输出日历字符串
     Calendar.prototype.toString = function() {
@@ -97,6 +99,7 @@
     };
 
 
+    // 时间选择器对象
     var DatePicker = function(element, options){
         this.$element = $(element);
         this.options = $.extend({}, DatePicker.DEFAULT, options);
@@ -125,9 +128,12 @@
         var calendar = this.calendar;
         var curMonth = calendar.getMonth();
         var dates = calendar.getMonthTable();
-        var $dateLabel = $dom.find('.date-label');
+        var $year = $dom.find('.year');
+        var $month = $dom.find('.month');
         var $dateCells = $dom.find('.date-cells');
-        $dateLabel.html(calendar.getYear() + '  ' +calendar.getMonthText());
+        var $weeks = $dom.find('.weeks');
+        $year.html(calendar.getYear());
+        $month.html(calendar.getMonthText());
         $dateCells.html('');
         for(var i = 0; i < dates.length; i+=7){
             var rowHtml = '<tr>';
@@ -137,6 +143,7 @@
             rowHtml += '</tr>';
             $dateCells.append(rowHtml);
         }
+        $weeks.html('<th>'+Calendar.week_text.join('</th><th>')+'</th>');
     };
     DatePicker.prototype.getCellDom = function(curMonth, date){
         var cell = '';
@@ -169,13 +176,18 @@
             var day = $(this).html();
             that.$element.val(that.calendar.getYear() +'-'+ that.calendar.getMonth() +'-'+ day);
         });
+        that.$dom.on('click','.year',function() {
+
+        });
     };
     DatePicker.headTemplate = '<thead>'
                             + '<tr>'
                             + ' <th class="prev"><i>&lt;</i></th>'
-                            + ' <th class="date-label" colspan="5"></th>'
+                            + ' <th class="year" colspan="2"></th>'
+                            + ' <th class="month" colspan="3"></th>'
                             + ' <th class="next"><i>&gt;</i></th>'
                             + '</tr>'
+                            + '<tr class="weeks"></tr>'
                             + '</thead>';
     DatePicker.contTemplate = '<tbody class="date-cells">'
                             + '<tr>'

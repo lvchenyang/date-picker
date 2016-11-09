@@ -1,16 +1,16 @@
 {
-  "name": "canlendar",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "jquery":"^3.1.1"
-  },
+    "name": "canlendar",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "jquery":"^3.1.1"
+    },
     "devDependencies": {
         "gulp":"^3.9.1",
         "gulp-concat": "^2.6.0"
