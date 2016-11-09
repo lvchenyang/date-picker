@@ -19,7 +19,7 @@
     vertical-align: middle;
     cursor: pointer;
 }
-.date-picker-table tbody td:hover{
+.date-picker-table tbody.date-cells td:hover{
     background-color: antiquewhite;
 }
 .date-picker-table tbody td.disabled{
@@ -28,4 +28,35 @@
 }
 .date-picker-table tbody td.disabled:hover{
     background-color: transparent;
+}
+.date-picker-table tbody.year-cells,
+.date-picker-table tbody.month-cells{
+    display: none;
+}
+.date-picker-table tbody td:after{
+    content: '';
+    display: block;
+    height: 0;
+    visibility: hidden;
+    clear: both;
+}
+.date-picker-table tbody.year-cells td>span.year{
+    width: 33.3333%;
+    height: 50px;
+    text-align: center;
+    line-height: 50px;
+    float: left;
+    cursor: pointer;
+}
+.date-picker-table tbody.year-cells td>span.year:hover,
+.date-picker-table tbody.month-cells td>span.month:hover{
+    background-color: antiquewhite;
+}
+.date-picker-table tbody.month-cells td>span.month {
+    width: 25%;
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+    float: left;
+    cursor: pointer;
 }

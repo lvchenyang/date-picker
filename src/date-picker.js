@@ -3,9 +3,9 @@
  */
 +(function(global, factory){
     if(typeof module === 'object' && typeof module.exports === 'object'){
-        module.exports = factory(jQuery, true);
+        module.exports = factory(global, true);
     }else{
-        factory(jQuery, false);
+        factory(global, false);
     }
 })(jQuery, function($, noGlobal){
 
@@ -111,7 +111,7 @@
         if(that.$element.attr('type') !== 'text'){
             throw new Error('the element witch this date picker bound must be a text input form')
         }
-        that.fillDom();
+        that.fillDate();
         that._attachEvt();
         $('body').append(that.$dom);
     };
@@ -122,16 +122,16 @@
         console.log('隐藏日期选择Panel');
     };
 
-    DatePicker.prototype.fillDom = function() {
+    DatePicker.prototype.fillDate = function() {
         var that = this;
         var $dom = this.$dom;
         var calendar = this.calendar;
         var curMonth = calendar.getMonth();
         var dates = calendar.getMonthTable();
-        var $year = $dom.find('.year');
-        var $month = $dom.find('.month');
+        var $year = $dom.find('.cur-year');
+        var $month = $dom.find('.cur-month');
         var $dateCells = $dom.find('.date-cells');
-        var $weeks = $dom.find('.weeks');
+        var $weeks = $dom.find('.week-list');
         $year.html(calendar.getYear());
         $month.html(calendar.getMonthText());
         $dateCells.html('');
@@ -145,6 +145,20 @@
         }
         $weeks.html('<th>'+Calendar.week_text.join('</th><th>')+'</th>');
     };
+    DatePicker.prototype.fillYear = function(curYear) {
+        var html = '';
+        for(var i = curYear - 4; i <= curYear + 4; i++){
+            html += '<span class="year">'+i+'</span>';
+        }
+        this.$dom.find('.year-cells>tr>td').html(html);
+    };
+    DatePicker.prototype.fillMonth = function(curMonth) {
+        var html = '';
+        for(var i = 0; i < 12; i++){
+            html += '<span class="month" data-month="'+i+'">'+Calendar.month_text[i]+'</span>';
+        }
+        this.$dom.find('.month-cells>tr>td').html(html);
+    }
     DatePicker.prototype.getCellDom = function(curMonth, date){
         var cell = '';
         if(date.getMonth() != curMonth){
@@ -162,42 +176,82 @@
     };
     DatePicker.prototype._attachEvt = function() {
         var that = this;
+        var $dom = that.$dom;
         that.$element.on('focus.date.picker', that.showPanel);
         that.$element.on('blur.date.picker',  that.hidePanel);
-        that.$dom.on('click','.prev', function(){
+        $dom.on('click','.prev', function(){
             that.calendar = that.calendar.previousCalendar();
-            that.fillDom();
+            that.fillDate();
         });
-        that.$dom.on('click','.next',function(){
+        $dom.on('click','.next',function(){
             that.calendar = that.calendar.nextCalendar();
-            that.fillDom();
+            that.fillDate();
         });
-        that.$dom.on('click','td:not(.disabled)',function() {
+        $dom.on('click','tbody.date-cells>td:not(.disabled)',function() {
             var day = $(this).html();
             that.$element.val(that.calendar.getYear() +'-'+ that.calendar.getMonth() +'-'+ day);
         });
-        that.$dom.on('click','.year',function() {
-
+        $dom.on('click','.cur-year',function() {
+            $dom.find('.date-cells').css('display','none');
+            $dom.find('.week-list').css('display','none');
+            $dom.find('.month-cells').css('display','none');
+            $dom.find('.year-cells').css('display','table-row-group');
+            that.fillYear(that.calendar.getYear());
+        });
+        $dom.on('click','.year-cells span.year', function() {
+            var year = $(this).html();
+            that.calendar = new Calendar(new Date(year, that.calendar.getMonth()));
+            that.fillDate();
+            $dom.find('.date-cells').css('display','table-row-group');
+            $dom.find('.week-list').css('display','table-row');
+            $dom.find('.month-cells').css('display','none');
+            $dom.find('.year-cells').css('display','none');
+        });
+        $dom.on('click', '.cur-month', function() {
+            that.fillMonth(that.calendar.getMonth());
+            $dom.find('.date-cells').css('display','none');
+            $dom.find('.week-list').css('display','none');
+            $dom.find('.month-cells').css('display','table-row-group');
+            $dom.find('.year-cells').css('display','none');
+        });
+        $dom.on('click','.month-cells span.month', function() {
+            var month = $(this).data('month');
+            that.calendar = new Calendar(new Date(that.calendar.getYear(), month));
+            that.fillDate();
+            $dom.find('.date-cells').css('display','table-row-group');
+            $dom.find('.week-list').css('display','table-row');
+            $dom.find('.month-cells').css('display','none');
+            $dom.find('.year-cells').css('display','none');
         });
     };
     DatePicker.headTemplate = '<thead>'
-                            + '<tr>'
-                            + ' <th class="prev"><i>&lt;</i></th>'
-                            + ' <th class="year" colspan="2"></th>'
-                            + ' <th class="month" colspan="3"></th>'
-                            + ' <th class="next"><i>&gt;</i></th>'
-                            + '</tr>'
-                            + '<tr class="weeks"></tr>'
+                            + '   <tr>'
+                            + '       <th class="prev"><i>&lt;</i></th>'
+                            + '       <th class="cur-year" colspan="2"></th>'
+                            + '       <th class="cur-month" colspan="3"></th>'
+                            + '       <th class="next"><i>&gt;</i></th>'
+                            + '   </tr>'
+                            + '<tr class="week-list"></tr>'
                             + '</thead>';
     DatePicker.contTemplate = '<tbody class="date-cells">'
-                            + '<tr>'
-                            + ' <td colspan="7"></td>'
-                            + '</tr>'
+                            + '    <tr>'
+                            + '        <td colspan="7"></td>'
+                            + '    </tr>'
+                            + '</tbody>'
+                            + '<tbody class="year-cells">'
+                            + '    <tr>'
+                            + '        <td colspan="7"></td>'
+                            + '    </tr>'
+                            + '</tbody>'
+                            + '<tbody class="month-cells">'
+                            + '    <tr>'
+                            + '       <td colspan="7"></td>'
+                            + '    </tr>'
                             + '</tbody>';
     DatePicker.footTemplate = '<tfoot>'
-                            + '<tr>'
-                            + ' <td colspan="7"></td>'
-                            + '</tr>'
+                            + '    <tr>'
+                            + '        <td colspan="7"></td>'
+                            + '    </tr>'
                             + '</tfoot>';
     DatePicker.template = '<table class="date-picker-table">'
                         +   DatePicker.headTemplate
